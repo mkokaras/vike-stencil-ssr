@@ -122,7 +122,7 @@ function hydrateFactory($stencilWindow, $stencilHydrateOpts, $stencilHydrateResu
 
 
 const NAMESPACE = 'ui-components';
-const BUILD = /* ui-components */ { allRenderFn: true, appendChildSlotFix: false, asyncLoading: true, attachStyles: true, cloneNodeFix: false, cmpDidLoad: false, cmpDidRender: false, cmpDidUnload: false, cmpDidUpdate: false, cmpShouldUpdate: false, cmpWillLoad: true, cmpWillRender: false, cmpWillUpdate: false, connectedCallback: false, constructableCSS: false, cssAnnotations: true, devTools: false, disconnectedCallback: false, element: false, event: false, experimentalScopedSlotChanges: false, experimentalSlotFixes: false, formAssociated: false, hasRenderFn: true, hostListener: false, hostListenerTarget: false, hostListenerTargetBody: false, hostListenerTargetDocument: false, hostListenerTargetParent: false, hostListenerTargetWindow: false, hotModuleReplacement: false, hydrateClientSide: true, hydrateServerSide: true, hydratedAttribute: false, hydratedClass: true, hydratedSelectorName: "hydrated", invisiblePrehydration: true, isDebug: false, isDev: false, isTesting: false, lazyLoad: true, lifecycle: true, lifecycleDOMEvents: false, member: true, method: false, mode: false, observeAttribute: true, profile: false, prop: true, propBoolean: false, propMutable: false, propNumber: true, propString: false, reflect: false, scoped: false, scopedSlotTextContentFix: false, scriptDataOpts: false, shadowDelegatesFocus: false, shadowDom: true, shadowDomShim: true, slot: false, slotChildNodesFix: false, slotRelocation: true, state: true, style: true, svg: false, taskQueue: true, updatable: true, vdomAttribute: true, vdomClass: false, vdomFunctional: false, vdomKey: true, vdomListener: true, vdomPropOrAttr: true, vdomRef: false, vdomRender: true, vdomStyle: false, vdomText: true, vdomXlink: false, watchCallback: false };
+const BUILD = /* ui-components */ { allRenderFn: true, appendChildSlotFix: false, asyncLoading: true, attachStyles: true, cloneNodeFix: false, cmpDidLoad: false, cmpDidRender: false, cmpDidUnload: false, cmpDidUpdate: false, cmpShouldUpdate: false, cmpWillLoad: true, cmpWillRender: false, cmpWillUpdate: false, connectedCallback: false, constructableCSS: false, cssAnnotations: true, devTools: false, disconnectedCallback: false, element: false, event: false, experimentalScopedSlotChanges: false, experimentalSlotFixes: false, formAssociated: false, hasRenderFn: true, hostListener: false, hostListenerTarget: false, hostListenerTargetBody: false, hostListenerTargetDocument: false, hostListenerTargetParent: false, hostListenerTargetWindow: false, hotModuleReplacement: false, hydrateClientSide: true, hydrateServerSide: true, hydratedAttribute: false, hydratedClass: true, hydratedSelectorName: "hydrated", invisiblePrehydration: true, isDebug: false, isDev: false, isTesting: false, lazyLoad: true, lifecycle: true, lifecycleDOMEvents: false, member: true, method: false, mode: false, observeAttribute: true, profile: false, prop: true, propBoolean: false, propMutable: false, propNumber: true, propString: false, reflect: false, scoped: false, scopedSlotTextContentFix: false, scriptDataOpts: false, shadowDelegatesFocus: false, shadowDom: true, shadowDomShim: true, slot: true, slotChildNodesFix: false, slotRelocation: true, state: true, style: true, svg: false, taskQueue: true, updatable: true, vdomAttribute: true, vdomClass: false, vdomFunctional: true, vdomKey: true, vdomListener: true, vdomPropOrAttr: true, vdomRef: false, vdomRender: true, vdomStyle: false, vdomText: true, vdomXlink: false, watchCallback: false };
 
 /*
  Stencil Hydrate Platform v4.18.3 | MIT Licensed | https://stenciljs.com
@@ -256,6 +256,13 @@ var h = (nodeName, vnodeData, ...children) => {
       slotName = vnodeData.name;
     }
   }
+  if (typeof nodeName === "function") {
+    return nodeName(
+      vnodeData === null ? {} : vnodeData,
+      vNodeChildren,
+      vdomFnUtils
+    );
+  }
   const vnode = newVNode(nodeName, null);
   vnode.$attrs$ = vnodeData;
   if (vNodeChildren.length > 0) {
@@ -290,6 +297,36 @@ var newVNode = (tag, text) => {
 };
 var Host = {};
 var isHost = (node) => node && node.$tag$ === Host;
+var vdomFnUtils = {
+  forEach: (children, cb) => children.map(convertToPublic).forEach(cb),
+  map: (children, cb) => children.map(convertToPublic).map(cb).map(convertToPrivate)
+};
+var convertToPublic = (node) => ({
+  vattrs: node.$attrs$,
+  vchildren: node.$children$,
+  vkey: node.$key$,
+  vname: node.$name$,
+  vtag: node.$tag$,
+  vtext: node.$text$
+});
+var convertToPrivate = (node) => {
+  if (typeof node.vtag === "function") {
+    const vnodeData = { ...node.vattrs };
+    if (node.vkey) {
+      vnodeData.key = node.vkey;
+    }
+    if (node.vname) {
+      vnodeData.name = node.vname;
+    }
+    return h(node.vtag, vnodeData, ...node.vchildren || []);
+  }
+  const vnode = newVNode(node.vtag, node.vtext);
+  vnode.$attrs$ = node.vattrs;
+  vnode.$children$ = node.vchildren;
+  vnode.$key$ = node.vkey;
+  vnode.$name$ = node.vname;
+  return vnode;
+};
 
 // src/runtime/client-hydrate.ts
 var initializeClientHydrate = (hostElm, tagName, hostId, hostRef) => {
@@ -887,11 +924,12 @@ var patch = (oldVNode, newVNode2, isInitialRender = false) => {
   const elm = newVNode2.$elm$ = oldVNode.$elm$;
   const oldChildren = oldVNode.$children$;
   const newChildren = newVNode2.$children$;
+  const tag = newVNode2.$tag$;
   const text = newVNode2.$text$;
   let defaultHolder;
   if (text === null) {
     {
-      {
+      if (tag === "slot" && !useNativeShadowDom) ; else {
         updateElement(oldVNode, newVNode2, isSvgMode);
       }
     }
@@ -1467,6 +1505,9 @@ var setContentReference = (elm) => {
   contentRefElm["s-cn"] = true;
   insertBefore(elm, contentRefElm, elm.firstChild);
 };
+
+// src/runtime/fragment.ts
+var Fragment = (_, children) => children;
 
 // src/runtime/vdom/vdom-annotations.ts
 var insertVdomAnnotations = (doc2, staticComponents) => {
@@ -2056,17 +2097,34 @@ class AppHome {
     }; }
 }
 
-const appRootCss = "/*!@:host*/.sc-app-root-h{display:block;font-family:sans-serif}/*!@**/*.sc-app-root{box-sizing:border-box;padding:0;margin:0}/*!@div*/div.sc-app-root{min-height:100vh;display:grid;grid-template-rows:80px 1fr}/*!@main*/main.sc-app-root{display:grid;gap:1.2rem;padding:3rem;grid-template-columns:repeat(2, 1fr);align-items:center}/*!@ul*/ul.sc-app-root{list-style:none;background-color:#fff;border-bottom:1px solid #eee;padding-inline:0.8rem;display:flex;align-items:center;gap:2.4rem;height:100%}/*!@li*/li.sc-app-root{font-weight:500;font-size:1.2rem;color:'#999';cursor:pointer}";
-var AppRootStyle0 = appRootCss;
+const appLayoutCss = "/*!@:host*/.sc-app-layout-h{display:block;font-family:sans-serif}/*!@**/*.sc-app-layout{box-sizing:border-box;padding:0;margin:0}/*!@div*/div.sc-app-layout{min-height:100vh;display:grid;grid-template-rows:80px 1fr}/*!@main*/main.sc-app-layout{display:grid;gap:1.2rem;padding:3rem;grid-template-columns:repeat(2, 1fr);align-items:center}/*!@ul*/ul.sc-app-layout{list-style:none;background-color:#fff;border-bottom:1px solid #eee;padding-inline:0.8rem;display:flex;align-items:center;gap:2.4rem;height:100%}/*!@li*/li.sc-app-layout{font-weight:500;font-size:1.2rem;color:'#999';cursor:pointer}";
+var AppLayoutStyle0 = appLayoutCss;
+
+class AppLayout {
+    constructor(hostRef) {
+        registerInstance(this, hostRef);
+    }
+    render() {
+        return (hAsync(Host, { key: '61ee92edc9080061c76d959030ca109effa4bb17' }, hAsync("div", { key: 'eb3872dd7e5901725d4971718e540e1dddbaecac' }, hAsync("aside", { key: '38d13d82442e1867536acd2a29d573166c233428' }, hAsync("ul", { key: 'd577070849dea732371b6e1ce1a53ca3e8925dc0' }, hAsync("li", { key: 'cefe7092aba33ce9527e713751543be63be815fd' }, "Create"), hAsync("li", { key: 'e10dbff95330a05ce87d6510c1e2376bce50bf2d' }, "Edit"))), hAsync("main", { key: '8350bc819dbcda0f4fbc901bbc3fee70519eebdd' }, hAsync("slot", { key: '62f0b010d8eab38a6b7a116e7ff9afd2dd2853db' })))));
+    }
+    static get style() { return AppLayoutStyle0; }
+    static get cmpMeta() { return {
+        "$flags$": 9,
+        "$tagName$": "app-layout",
+        "$members$": undefined,
+        "$listeners$": undefined,
+        "$lazyBundleId$": "-",
+        "$attrsToReflect$": []
+    }; }
+}
 
 class AppRoot {
     constructor(hostRef) {
         registerInstance(this, hostRef);
     }
     render() {
-        return (hAsync(Host, { key: 'e7abfbcc91fa487833a1af607f90b6e771034be0' }, hAsync("div", { key: 'e888a1d40edabd891d6c0da4c093378dca162ef6' }, hAsync("aside", { key: '9bb1ed45d02d0ba0fa37821b8030800b069dd0aa' }, hAsync("ul", { key: '27a2c180014d1dac0dce0df7043f4cecbfd1dfac' }, hAsync("li", { key: 'd0ccabba21831d59714528c8b281f42683ee56b5' }, "Create"), hAsync("li", { key: 'c18c20f30d06ca206ae15614863906947b6418c1' }, "Edit"))), hAsync("main", { key: '6e88c8e2ee36642ce3e87a661052bf4b10af9d1d' }, hAsync("app-card", { key: '6f78825a92605e3afdd8285b7f8adb2533f40fe8', index: 1 }), hAsync("app-card", { key: 'ab63b47656e002529e0b32ab88819c949187305f', index: 2 })))));
+        return (hAsync(Fragment, { key: '9b2489ede02c918c00b7adf645b6dc71f79a49cb' }, hAsync("app-card", { key: 'aa1f3ba746b5a084c8e9b2d5c935388d88a52205', index: 1 }), hAsync("app-card", { key: '066f055b392057cbe6c1220959f2f05f16218a26', index: 2 })));
     }
-    static get style() { return AppRootStyle0; }
     static get cmpMeta() { return {
         "$flags$": 9,
         "$tagName$": "app-root",
@@ -2080,6 +2138,7 @@ class AppRoot {
 registerComponents([
   AppCard,
   AppHome,
+  AppLayout,
   AppRoot,
 ]);
 

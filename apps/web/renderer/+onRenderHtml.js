@@ -8,14 +8,15 @@ import { getPageTitle } from './getPageTitle';
 const { renderToString } = require('../../../packages/ui-components/hydrate');
 
 async function onRenderHtml(pageContext) {
-  const { Page } = pageContext;
+  const { Page, Layout } = pageContext.config;
 
   // This onRenderHtml() hook only supports SSR, see https://vike.dev/render-modes for how to modify
   // onRenderHtml() to support SPA
   if (!Page) throw new Error('My onRenderHtml() hook expects pageContext.Page to be defined');
 
   // Alternativly, we can use an HTML stream, see https://vike.dev/streaming
-  const pageHtml = await renderToString(Page());
+
+  const pageHtml = await renderToString(Layout(Page()));
 
   // See https://vike.dev/head
   const title = getPageTitle(pageContext);
