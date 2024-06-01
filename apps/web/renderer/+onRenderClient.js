@@ -4,8 +4,6 @@ export { onRenderClient };
 import { getPageTitle } from './getPageTitle';
 import { defineCustomElements } from 'ui-components/loader';
 
-// let root;
-
 async function onRenderClient(pageContext) {
   const { Page } = pageContext;
 
