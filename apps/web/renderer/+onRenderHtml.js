@@ -16,7 +16,11 @@ async function onRenderHtml(pageContext) {
 
   // Alternativly, we can use an HTML stream, see https://vike.dev/streaming
 
-  const pageHtml = await renderToString(Layout(Page()));
+  /** Stencil issue */
+  const pageHtml = await renderToString(Layout(Page()), {
+    hydrate: true,
+    prettyHtml: true,
+  });
 
   // See https://vike.dev/head
   const title = getPageTitle(pageContext);
