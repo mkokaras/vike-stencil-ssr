@@ -18,8 +18,8 @@ async function onRenderHtml(pageContext) {
 
   /** Stencil issue */
   const pageHtml = await renderToString(Layout(Page()), {
-    hydrate: true,
     prettyHtml: true,
+    removeScripts: true,
   });
 
   // See https://vike.dev/head
