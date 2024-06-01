@@ -9,6 +9,7 @@ import { getPost, Post } from '../../utils';
 export class AppCard {
   @State() post: Post;
   @Prop() index!: number;
+  @State() votes = 0;
 
   componentWillLoad() {
     return getPost(this.index).then(post => {
@@ -21,6 +22,13 @@ export class AppCard {
       <article>
         <h2>{this.post.title}</h2>
         <p>{this.post.body}</p>
+        <button
+          onClick={() => {
+            this.votes++;
+          }}
+        >
+          Upvote {this.votes}
+        </button>
       </article>
     );
   }

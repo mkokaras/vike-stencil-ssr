@@ -1,5 +1,5 @@
 {
-  "name": "vite-stencil-ssr",
+  "name": "vike-stencil-ssr",
   "private": true,
   "engines": {
     "node": ">=18"

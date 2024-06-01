@@ -16,6 +16,9 @@ export const config: Config = {
       type: 'docs-readme',
     },
     {
+      type: 'dist-hydrate-script',
+    },
+    {
       type: 'www',
       serviceWorker: null, // disable service workers
       baseUrl: 'http://localhost:5173',
