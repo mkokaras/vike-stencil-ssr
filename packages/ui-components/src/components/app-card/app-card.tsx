@@ -20,6 +20,7 @@ export class AppCard {
   render() {
     return (
       <article>
+        <a href="/home">Go home</a>
         <h2>{this.post.title}</h2>
         <p>{this.post.body}</p>
         <button

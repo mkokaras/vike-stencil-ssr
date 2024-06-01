@@ -15,7 +15,7 @@ async function onRenderHtml(pageContext) {
   if (!Page) throw new Error('My onRenderHtml() hook expects pageContext.Page to be defined');
 
   // Alternativly, we can use an HTML stream, see https://vike.dev/streaming
-  const pageHtml = await renderToString(`<app-root></app-root>`);
+  const pageHtml = await renderToString(Page());
 
   // See https://vike.dev/head
   const title = getPageTitle(pageContext);

@@ -2,10 +2,10 @@
 export { onRenderClient };
 
 import { getPageTitle } from './getPageTitle';
-
-import { hydrateDocument } from '../../../packages/ui-components/hydrate';
+import { defineCustomElements } from 'ui-components/loader';
 
 // let root;
+
 async function onRenderClient(pageContext) {
   const { Page } = pageContext;
 
@@ -13,17 +13,18 @@ async function onRenderClient(pageContext) {
   // to support SPA
   if (!Page) throw new Error('My onRenderClient() hook expects pageContext.Page to be defined');
 
-  const container = document.getElementById('react-root');
+  const container = document.getElementById('root');
   if (!container) throw new Error('DOM element #react-root not found');
 
   if (pageContext.isHydration) {
+    defineCustomElements();
+    // const results = await hydrateDocument(document);
+    // console.log(results);
     // hydrateRoot(container, <PageShell pageContext={pageContext} />)
   } else {
     // root = createRoot(container)
     // root.render(<PageShell pageContext={pageContext} />)
   }
-
-  await hydrateDocument(Window.document);
 
   // const page = (
   //   <PageShell pageContext={pageContext}>

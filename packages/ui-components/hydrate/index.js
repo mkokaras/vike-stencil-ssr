@@ -2020,7 +2020,7 @@ class AppCard {
         });
     }
     render() {
-        return (hAsync("article", { key: '752aa72e5d4d70e9e84b26386abbe2799c807c2b' }, hAsync("h2", { key: 'adad7d1d6d640893df5b0e972c3c43f73db7332c' }, this.post.title), hAsync("p", { key: 'c86818b85d3b7061e04002dd8ecb82591faa4524' }, this.post.body), hAsync("button", { key: '31fffde185fffdb819f496addfc9f5023cfe0fa4', onClick: () => {
+        return (hAsync("article", { key: '752aa72e5d4d70e9e84b26386abbe2799c807c2b' }, hAsync("a", { key: 'd9d2a1e22fe891b5660b7763d1d5c072559f79aa', href: "/home" }, "Go home"), hAsync("h2", { key: 'e88946a2b5f9f20a8b4596a656a0b908a55da317' }, this.post.title), hAsync("p", { key: 'b51e639dc0c54396ee01adc670c184e5dfc68294' }, this.post.body), hAsync("button", { key: 'dff21148cba1e505414f14a337c9b9c06c709b96', onClick: () => {
                 this.votes++;
             } }, "Upvote ", this.votes)));
     }
@@ -2039,6 +2039,23 @@ class AppCard {
     }; }
 }
 
+class AppHome {
+    constructor(hostRef) {
+        registerInstance(this, hostRef);
+    }
+    render() {
+        return (hAsync(Host, { key: '8561581825daae757f5f878e8973134474c39f97' }, hAsync("div", { key: '4e82e15f43e8b4ce27492b65eaa9e81e97c05fae' }, hAsync("main", { key: 'a0229ada5ce7d2ec5a547c003a2bfcbfebdae32e' }, hAsync("h1", { key: '3c7821c300723c06e526678ded2f6b5dec6bcef7' }, "Home Page!!!!")))));
+    }
+    static get cmpMeta() { return {
+        "$flags$": 9,
+        "$tagName$": "app-home",
+        "$members$": undefined,
+        "$listeners$": undefined,
+        "$lazyBundleId$": "-",
+        "$attrsToReflect$": []
+    }; }
+}
+
 const appRootCss = "/*!@:host*/.sc-app-root-h{display:block;font-family:sans-serif}/*!@**/*.sc-app-root{box-sizing:border-box;padding:0;margin:0}/*!@div*/div.sc-app-root{min-height:100vh;display:grid;grid-template-rows:80px 1fr}/*!@main*/main.sc-app-root{display:grid;gap:1.2rem;padding:3rem;grid-template-columns:repeat(2, 1fr);align-items:center}/*!@ul*/ul.sc-app-root{list-style:none;background-color:#fff;border-bottom:1px solid #eee;padding-inline:0.8rem;display:flex;align-items:center;gap:2.4rem;height:100%}/*!@li*/li.sc-app-root{font-weight:500;font-size:1.2rem;color:'#999';cursor:pointer}";
 var AppRootStyle0 = appRootCss;
 
@@ -2047,7 +2064,7 @@ class AppRoot {
         registerInstance(this, hostRef);
     }
     render() {
-        return (hAsync(Host, { key: 'd938001afd650d08ef439176b4d66381ba864ef9' }, hAsync("div", { key: '6ab8127faa2028c342315f0711676b66cbe69d16' }, hAsync("aside", { key: '14bd7cb8c964bb38060f0e1df53e0f00ec4a42f7' }, hAsync("ul", { key: 'a96f4989b9d33d97170b860011e0f47bb1a5abf3' }, hAsync("li", { key: '0006e25c2d6c092b18a5612f66f390ee0a7285c8' }, "Create"), hAsync("li", { key: 'de387bc72a1ca2fddbbad32777f9bfa5538ab3b6' }, "Edit"))), hAsync("main", { key: '21d4631922814ed76bcbc570d904ecb68c294905' }, hAsync("app-card", { key: 'e281ba9be31b6a2c70c90b1090e2946dc88fead4', index: 1 }), hAsync("app-card", { key: '290c0c00d9b430809f41c61e5ab8dde58e82a967', index: 2 })))));
+        return (hAsync(Host, { key: 'e7abfbcc91fa487833a1af607f90b6e771034be0' }, hAsync("div", { key: 'e888a1d40edabd891d6c0da4c093378dca162ef6' }, hAsync("aside", { key: '9bb1ed45d02d0ba0fa37821b8030800b069dd0aa' }, hAsync("ul", { key: '27a2c180014d1dac0dce0df7043f4cecbfd1dfac' }, hAsync("li", { key: 'd0ccabba21831d59714528c8b281f42683ee56b5' }, "Create"), hAsync("li", { key: 'c18c20f30d06ca206ae15614863906947b6418c1' }, "Edit"))), hAsync("main", { key: '6e88c8e2ee36642ce3e87a661052bf4b10af9d1d' }, hAsync("app-card", { key: '6f78825a92605e3afdd8285b7f8adb2533f40fe8', index: 1 }), hAsync("app-card", { key: 'ab63b47656e002529e0b32ab88819c949187305f', index: 2 })))));
     }
     static get style() { return AppRootStyle0; }
     static get cmpMeta() { return {
@@ -2062,6 +2079,7 @@ class AppRoot {
 
 registerComponents([
   AppCard,
+  AppHome,
   AppRoot,
 ]);
 

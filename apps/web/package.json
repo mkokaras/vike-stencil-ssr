@@ -15,7 +15,8 @@
     "node-fetch": "^3.3.2",
     "sirv": "^2.0.3",
     "vike": "^0.4.171",
-    "vite": "^5.0.10"
+    "vite": "^5.0.10",
+    "ui-components": "*"
   },
   "type": "module"
 }
